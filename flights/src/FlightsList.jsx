@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react'
-import {Table} from 'semantic-ui-react'
+import React, {useEffect, useState} from 'react'
+import {Segment, Table} from 'semantic-ui-react'
+import {Map} from "./Map.jsx";
 
 export default function FlightsList(props) {
     let {airportCode, departure} = props
@@ -34,24 +35,40 @@ export default function FlightsList(props) {
 
     return(
         <>
-            {!hasLoaded && <img src="/src/assets/loading.gif" height="100px" width="100px"></img>}
+            {!hasLoaded &&
+                <>
+                    <div className="container">
+                        <img src="/src/assets/loading.gif" className="center" height="100px" width="100px"></img>
+                    </div>
+                </>
+            }
             {hasLoaded &&
                 <>
-                    <h2>{titleString}</h2>
-                    <Table celled>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>Airline</Table.HeaderCell>
-                                <Table.HeaderCell>Flight number</Table.HeaderCell>
-                                <Table.HeaderCell>{departure ? "Destination" : "Origin"}</Table.HeaderCell>
-                                <Table.HeaderCell>Departure time</Table.HeaderCell>
-                                <Table.HeaderCell>Arrival time</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {flightsTable}
-                        </Table.Body>
-                    </Table>
+                    <div className="container">
+                        <div className="listContainer">
+                            <h3 style={{height: "2vh"}}>{titleString}</h3>
+                            <Segment style={{overflow: 'auto', maxHeight: "92%" }}>
+                            <Table celled>
+                                <Table.Header>
+                                    <Table.Row>
+                                        <Table.HeaderCell>Airline</Table.HeaderCell>
+                                        <Table.HeaderCell>Flight number</Table.HeaderCell>
+                                        <Table.HeaderCell>{departure ? "Destination" : "Origin"}</Table.HeaderCell>
+                                        <Table.HeaderCell>Departure time</Table.HeaderCell>
+                                        <Table.HeaderCell>Arrival time</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Header>
+                                <Table.Body>
+                                    {flightsTable}
+                                </Table.Body>
+                            </Table>
+                            </Segment>
+                        </div>
+                        <div className="mapContainer">
+                            <Map>
+                            </Map>
+                        </div>
+                    </div>
                 </>
             }
         </>

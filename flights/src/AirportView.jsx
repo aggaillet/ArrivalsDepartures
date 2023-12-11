@@ -108,13 +108,15 @@ export function AirportView(func) {
 
         return (
             <>
-                <Input
-                    icon="search"
-                    placeholder="Airport Research by name..."
-                    onChange={handleSearch}
-                    value={searchTerm}
-                />
-                <Segment style={{overflow: 'auto', maxHeight: screen.height }}>
+                <Segment style={{height: "8%"}}>
+                    <Input
+                           icon="search"
+                           placeholder="Airport Research by name..."
+                           onChange={handleSearch}
+                           value={searchTerm}
+                    />
+                </Segment>
+                <Segment style={{overflow: 'auto', maxHeight: "92%" }}>
                     {loading ? (
                         <p>Loading...</p>
                     ) : (

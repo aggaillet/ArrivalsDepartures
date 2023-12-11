@@ -66,30 +66,32 @@ button {
   padding: 10px;
 }
 
+.table{
+  width: 40vw;
+}
+
 .container {
   display: flex;
-  height: 100vh;
+  height: 80vh;
 }
 
 .listContainer {
-  width: 25%;
+  width: 41vw;
+  height: 100%;
+  border: white solid 2px;
 }
 
 .listSegment {
-  max-height: 80vh;
+  max-height: 100%;
   overflow-y: auto;
+  width: 90%;
 }
 
 .mapContainer {
-  width: 75%;
-  height: 100vh;
+  border: white 2px solid;
+  height: 100%;
   overflow: hidden;
   position: relative;
-}
-
-.mapContainer .leaflet-container {
-  width: 75%;
-  height: 100%;
 }
 
 .menu{
@@ -97,14 +99,19 @@ button {
 }
 
 .leaflet-container {
-  width: 100%;
-  height: 100vh;
+  min-width: 55vw;
+  height: 100%;
 }
 
 .input {
   font-size: 1.2em;
   padding: 0.5em 1em;
   width: 300px;
+}
+
+.center {
+  display: block;
+  margin: auto;
 }
 
 @media (prefers-color-scheme: light) {
