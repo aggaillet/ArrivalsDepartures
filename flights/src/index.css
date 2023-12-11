@@ -46,12 +46,28 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
+
+.item{
+  padding: 10px 30px 10px 30px;
+  font-weight: 500;
+  color: white;
+  text-decoration: inherit;
+  font-size: 1.2em;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.item:hover{
+  color: #aaafff;
+  cursor: pointer;
+}
+
+.table, th, tr, td{
+  border: 1px solid;
+  border-collapse: collapse;
+  padding: 10px;
+}
+
+.menu{
+  outline: solid white;
 }
 
 @media (prefers-color-scheme: light) {
