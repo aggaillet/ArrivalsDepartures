@@ -1,20 +1,25 @@
 import './App.css'
-import DeparturesList from "./DeparturesList.jsx";
-import ShowButton from "./ShowButton.jsx";
+import FlightsList from "./FlightsList.jsx";
 import {useState} from "react";
+import MenuAirports from "./Menu.jsx";
 
 function App() {
-    const [hasBeenClicked, setHasBeenClicked] = useState(false);
+    const [activeMenu, setActiveMenu] = useState('airports')
+    const [currentAirport, setCurrentAirport] = useState('mxp')
 
-    const handleButtonClick = () => {
-        setHasBeenClicked(true)
-    };
+    const handleAirportSelection = (iataCode) => {
+        setCurrentAirport(iataCode.toLowerCase())
+    }
+
+    const onClickMenuItem = (name) => {
+        setActiveMenu(name)
+    }
 
     return (
         <>
-            <h1>Destinations from TOULOUSE :</h1>
-            {!hasBeenClicked && <ShowButton onBtnPress={handleButtonClick}/>}
-            {hasBeenClicked && <DeparturesList/>}
+            <MenuAirports onClickItem={onClickMenuItem}></MenuAirports>
+            {activeMenu === 'departures' && <FlightsList airportCode={currentAirport.toLowerCase()} departure={true}/>}
+            {activeMenu === 'arrivals' && <FlightsList airportCode={currentAirport.toLowerCase()} departure={false}/>}
         </>
     )
 
