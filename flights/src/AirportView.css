@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.listContainer {
+    width: 25%;
+}
+
+.listSegment {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.mapContainer {
+    width: 75%;
+    height: 100%;
+    overflow: hidden;
+}

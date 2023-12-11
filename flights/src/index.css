@@ -66,8 +66,45 @@ button {
   padding: 10px;
 }
 
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.listContainer {
+  width: 25%;
+}
+
+.listSegment {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.mapContainer {
+  width: 75%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.mapContainer .leaflet-container {
+  width: 75%;
+  height: 100%;
+}
+
 .menu{
   outline: solid white;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100vh;
+}
+
+.input {
+  font-size: 1.2em;
+  padding: 0.5em 1em;
+  width: 300px;
 }
 
 @media (prefers-color-scheme: light) {
