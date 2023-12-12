@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {Input, Segment, Table} from "semantic-ui-react";
 import 'leaflet/dist/leaflet.css';
 import './index.css'
 import {Map} from './Map.jsx'
 import {Marker, Popup} from 'react-leaflet'
+import React, { useEffect, useState } from "react";
 import L from 'leaflet'
 import icon from './assets/airportIcon.png'
-import {create as searchTerm} from "eslint-plugin-react/lib/rules/sort-prop-types.js";
+import {Input, Segment, Table} from "semantic-ui-react";
 
 
 export function AirportView(func) {
@@ -63,16 +62,32 @@ export function AirportView(func) {
             iconAnchor: [25, 50],
         });
 
+        function handleArrivalBtn(iata) {
+            console.log("Arrival Btn : " , iata)
+            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
+        }
+
+        function handleDepartureBtn(iata) {
+            console.log("Departure Btn : " , iata)
+            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
+        }
+
         return (
             <>
                 {items.map((item, index) => {
                     return (
-                        <Marker key={index} position={[item.lat, item.lon]} icon={airportIcon}>
+                        <Marker key={index}
+                                position={[item.lat, item.lon]}
+                                icon={airportIcon}>
                             <Popup>
                                 <div>
-                                    <p>Airport Name: {item.name}</p>
+                                    <h2>{item.name}</h2>
                                     <p>IATA Code: {item.iata}</p>
                                     <p>Continent: {item.continent}</p>
+                                    <p>
+                                        <button onClick={() => handleArrivalBtn(item.iata)}>Arrival</button>
+                                        <button onClick={() => handleDepartureBtn(item.iata)}>Departure</button>
+                                    </p>
                                 </div>
                             </Popup>
                         </Marker>
@@ -86,8 +101,8 @@ export function AirportView(func) {
         const [searchTerm, setSearchTerm] = useState('');
 
         function pain(iata) {
-            console.log("AP clicked : ",  iata);
-            //TODO This method is just for standalone, needs to be deleted after modifying the logic of "func"
+            console.log("Via list : ",  iata);
+            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
         }
 
         function handleSearch(e) {
