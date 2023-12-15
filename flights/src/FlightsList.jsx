@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import {Segment, Table} from 'semantic-ui-react'
 import {Map} from "./Map.jsx";
 import AirportMarkers from "./AirportMarkers.jsx";
-import FlightLines from "../FlightLines.jsx";
+import FlightLines from "./FlightLines.jsx";
 
 export default function FlightsList({airport, departure, allAirports}) {
     let airportCode = airport.iata
@@ -70,7 +70,7 @@ export default function FlightsList({airport, departure, allAirports}) {
                         </div>
                         <div className="mapContainer">
                             <Map>
-                                <FlightLines mainAirport={airport} otherAirports={selectedAirports}></FlightLines>
+                                <FlightLines mainAirport={airport} otherAirports={selectedAirports} />
                                 <AirportMarkers items={selectedAirports.concat(airport)} onMarkerClick={null}/>
                             </Map>
                         </div>
