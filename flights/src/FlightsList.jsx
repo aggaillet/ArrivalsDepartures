@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Segment, Table} from 'semantic-ui-react'
 import {Map} from "./Map.jsx";
+import AirportMarkers from "./AirportMarkers.jsx";
 
-export default function FlightsList(props) {
-    let {airportCode, departure} = props
-    airportCode = airportCode.toLowerCase()
+export default function FlightsList({airport, departure, allAirports}) {
+    let airportCode = airport.iata
     let requestString = ""
-    let titleString = ""
+    let titleString
     if (departure) {
         requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/departures?locale=en-GB"
-        titleString = "Departures from " + airportCode
+        titleString = "DEPARTURES FROM"
     } else {
         requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/arrivals?locale=en-GB"
-        titleString = "Arrivals to " + airportCode
+        titleString = "ARRIVALS TO"
     }
 
     const [departures, setDepartures] = useState([])
@@ -46,8 +46,9 @@ export default function FlightsList(props) {
                 <>
                     <div className="container">
                         <div className="listContainer">
-                            <h3 style={{height: "2vh"}}>{titleString}</h3>
-                            <Segment style={{overflow: 'auto', maxHeight: "92%" }}>
+                            <h3 style={{height: "3%", marginBottom: 0, fontSize: 20}}>{titleString}</h3>
+                            <h3 style={{height: "3%", marginTop: 0, fontSize: 18}}>{airport.name}</h3>
+                            <Segment style={{overflow: 'auto', maxHeight: "89%" }}>
                             <Table celled>
                                 <Table.Header>
                                     <Table.Row>
@@ -66,6 +67,7 @@ export default function FlightsList(props) {
                         </div>
                         <div className="mapContainer">
                             <Map>
+                                <AirportMarkers items={[airport]} onMarkerClick={null}/>
                             </Map>
                         </div>
                     </div>

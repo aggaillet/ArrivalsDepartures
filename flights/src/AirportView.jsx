@@ -2,15 +2,27 @@ import 'leaflet/dist/leaflet.css';
 import './index.css'
 import {Map} from './Map.jsx'
 import {Marker, Popup} from 'react-leaflet'
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import L from 'leaflet'
 import icon from './assets/airportIcon.png'
-import {Input, Segment, Table} from "semantic-ui-react";
+import {Container, Input, Segment, Table} from "semantic-ui-react";
+import AirportMarkers from "./AirportMarkers.jsx";
 
 
-export function AirportView(func) {
+export function AirportView({onAirportSelectFunc}) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentAirport, setCurrentAirport] = useState({
+        "iata": "TLS",
+        "lon": "1.374321",
+        "iso": "FR",
+        "status": 1,
+        "name": "Toulouse-Blagnac Airport",
+        "continent": "EU",
+        "type": "airport",
+        "lat": "43.63007",
+        "size": "large"
+    });
 
     const BASE_API_URL = "https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json";
 
@@ -27,10 +39,12 @@ export function AirportView(func) {
                 (item) =>
                     item.lat !== undefined &&
                     item.lon !== undefined &&
+                    item.name !== null &&
                     !isNaN(item.lat) &&
                     !isNaN(item.lon) &&
                     item.type === 'airport' &&
-                    item.size === 'large'
+                    item.size === 'large'&&
+                    item.iata !== 'TJP'  // Bug in aiport API creates this non-existing airport
             );
 
             setItems(filteredItems);
@@ -48,62 +62,14 @@ export function AirportView(func) {
             </div>
             <div className="mapContainer">
                 <Map>
-                    <AirportMap />
+                    <AirportMarkers items={items} onMarkerClick={handleAirportSelection}/>
                 </Map>
             </div>
         </div>
     )
 
-    function AirportMap() {
-
-        const airportIcon = L.icon({
-            iconUrl: icon,
-            iconSize: [50, 50],
-            iconAnchor: [25, 50],
-        });
-
-        function handleArrivalBtn(iata) {
-            console.log("Arrival Btn : " , iata)
-            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
-        }
-
-        function handleDepartureBtn(iata) {
-            console.log("Departure Btn : " , iata)
-            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
-        }
-
-        return (
-            <>
-                {items.map((item, index) => {
-                    return (
-                        <Marker key={index}
-                                position={[item.lat, item.lon]}
-                                icon={airportIcon}>
-                            <Popup>
-                                <div>
-                                    <h2>{item.name}</h2>
-                                    <p>IATA Code: {item.iata}</p>
-                                    <p>Continent: {item.continent}</p>
-                                    <p>
-                                        <button onClick={() => handleArrivalBtn(item.iata)}>Arrival</button>
-                                        <button onClick={() => handleDepartureBtn(item.iata)}>Departure</button>
-                                    </p>
-                                </div>
-                            </Popup>
-                        </Marker>
-                    );
-                })}
-            </>
-        )
-    }
-
     function AirportList() {
         const [searchTerm, setSearchTerm] = useState('');
-
-        function pain(iata) {
-            console.log("Via list : ",  iata);
-            //TODO This method is just for tests, needs to be deleted after modifying the logic of "func"
-        }
 
         function handleSearch(e) {
             setSearchTerm(e.target.value);
@@ -123,15 +89,16 @@ export function AirportView(func) {
 
         return (
             <>
-                <Segment style={{height: "8%"}}>
+                <div style={{display: "inline-block"}}>
+                <h3 style={{marginBottom: 0}}>Current selection: {currentAirport.iata}</h3>
                     <Input
                            icon="search"
                            placeholder="Airport Research by name..."
                            onChange={handleSearch}
                            value={searchTerm}
                     />
-                </Segment>
-                <Segment style={{overflow: 'auto', maxHeight: "92%" }}>
+                </div>
+                <Segment style={{overflow: 'auto', maxHeight: "87%" }}>
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
@@ -146,7 +113,7 @@ export function AirportView(func) {
 
                             <Table.Body>
                                 {filteredItems.map((item, index) => (
-                                    <Table.Row key={index} onClick={() => pain(item.iata)}>
+                                    <Table.Row key={index} onClick={() => handleAirportSelection(item)}>
                                         <Table.Cell>{item.name}</Table.Cell>
                                         <Table.Cell>{item.iata}</Table.Cell>
                                         <Table.Cell>{item.continent}</Table.Cell>
@@ -158,5 +125,10 @@ export function AirportView(func) {
                 </Segment>
             </>
         )
+    }
+
+    function handleAirportSelection(airport) {
+        setCurrentAirport(airport)
+        onAirportSelectFunc(airport)
     }
 }
