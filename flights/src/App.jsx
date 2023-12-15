@@ -1,6 +1,6 @@
 import './App.css'
 import FlightsList from "./FlightsList.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import MenuAirports from "./Menu.jsx";
 import {AirportView} from "./AirportView.jsx";
 
@@ -17,6 +17,13 @@ function App() {
         "lat": "43.63007",
         "size": "large"
     })
+    const [airports, setAirports] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const BASE_API_URL = "https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json";
+
+    useEffect(() => {
+        api_retriever_ap();
+    }, []);
 
     const handleAirportSelection = (airport) => {
         setCurrentAirport(airport)
@@ -30,18 +37,36 @@ function App() {
         <>
             <div style={{width: "90vw", padding: 0, margin: 0, border: "white solid 5px", position: "absolute", top: "5vh", left: "5vw"}}>
                 <MenuAirports onClickItem={onClickMenuItem}></MenuAirports>
-                {activeMenu === 'airports' && <AirportView onAirportSelectFunc={handleAirportSelection}/>}
+                {activeMenu === 'airports' && <AirportView loading={loading} items={airports.filter(x => x.size === 'large')} onAirportSelectFunc={handleAirportSelection}/>}
                 {activeMenu === 'departures' && <FlightsList airport={currentAirport} departure={true} allAirports={airports}/>}
                 {activeMenu === 'arrivals' && <FlightsList airport={currentAirport} departure={false} allAirports={airports}/>}
             </div>
         </>
     )
 
+    async function api_retriever_ap() {
+        try {
+            let res = await fetch(BASE_API_URL)
+            let data = await res.json();
+
+            let filteredItems = data.filter(
+                (item) =>
+                    item.lat !== undefined &&
+                    item.lon !== undefined &&
+                    item.name !== null &&
+                    !isNaN(item.lat) &&
+                    !isNaN(item.lon) &&
+                    item.type === 'airport' &&
+                    item.iata !== 'TJP'  // Bug in airport API creates this non-existing airport
+            );
+
+            setAirports(filteredItems);
+            setLoading(false);
+        } catch (error) {
+            console.error("API ERROR", error);
+            setLoading(false);
+        }
+    }
 }
 
 export default App
-
-
-function getAllAirports(){
-
-}

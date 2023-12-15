@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react'
 import {Segment, Table} from 'semantic-ui-react'
 import {Map} from "./Map.jsx";
 import AirportMarkers from "./AirportMarkers.jsx";
+import FlightLines from "../FlightLines.jsx";
 
 export default function FlightsList({airport, departure, allAirports}) {
     let airportCode = airport.iata
@@ -24,6 +25,8 @@ export default function FlightsList({airport, departure, allAirports}) {
             <Table.Cell>{x.localisedScheduledDepartureTime.slice(-5)}</Table.Cell>
             <Table.Cell>{x.localisedScheduledArrivalTime.slice(-5)}</Table.Cell>
         </Table.Row>);
+    let selectedAirportCodes = departures.map(x => departure ? x.arrivalAirportCode : x.departureAirportCode)
+    let selectedAirports = allAirports.filter(x => selectedAirportCodes.includes(x.iata))
 
     useEffect(() => {
         // Execute only at first render
@@ -67,7 +70,8 @@ export default function FlightsList({airport, departure, allAirports}) {
                         </div>
                         <div className="mapContainer">
                             <Map>
-                                <AirportMarkers items={[airport]} onMarkerClick={null}/>
+                                <FlightLines mainAirport={airport} otherAirports={selectedAirports}></FlightLines>
+                                <AirportMarkers items={selectedAirports.concat(airport)} onMarkerClick={null}/>
                             </Map>
                         </div>
                     </div>

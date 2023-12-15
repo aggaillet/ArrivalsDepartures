@@ -1,17 +1,12 @@
 import 'leaflet/dist/leaflet.css';
 import './index.css'
 import {Map} from './Map.jsx'
-import {Marker, Popup} from 'react-leaflet'
-import { useEffect, useState } from "react";
-import L from 'leaflet'
-import icon from './assets/airportIcon.png'
-import {Container, Input, Segment, Table} from "semantic-ui-react";
+import {useState} from "react";
+import {Input, Segment, Table} from "semantic-ui-react";
 import AirportMarkers from "./AirportMarkers.jsx";
 
 
-export function AirportView({onAirportSelectFunc}) {
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
+export function AirportView({loading, items, onAirportSelectFunc}) {
     const [currentAirport, setCurrentAirport] = useState({
         "iata": "TLS",
         "lon": "1.374321",
@@ -23,37 +18,6 @@ export function AirportView({onAirportSelectFunc}) {
         "lat": "43.63007",
         "size": "large"
     });
-
-    const BASE_API_URL = "https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json";
-
-    useEffect(() => {
-        api_retriever_ap();
-    }, []);
-
-    async function api_retriever_ap() {
-        try {
-            let res = await fetch(BASE_API_URL)
-            let data = await res.json();
-
-            let filteredItems = data.filter(
-                (item) =>
-                    item.lat !== undefined &&
-                    item.lon !== undefined &&
-                    item.name !== null &&
-                    !isNaN(item.lat) &&
-                    !isNaN(item.lon) &&
-                    item.type === 'airport' &&
-                    item.size === 'large'&&
-                    item.iata !== 'TJP'  // Bug in aiport API creates this non-existing airport
-            );
-
-            setItems(filteredItems);
-            setLoading(false);
-        } catch (error) {
-            console.error("API ERROR", error);
-            setLoading(false);
-        }
-    }
 
     return (
         <div className="container">
