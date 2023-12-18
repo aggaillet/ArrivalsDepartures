@@ -27,6 +27,8 @@ export default function FlightsList({airport, departure, allAirports}) {
         </Table.Row>);
     let selectedAirportCodes = departures.map(x => departure ? x.arrivalAirportCode : x.departureAirportCode)
     let selectedAirports = allAirports.filter(x => selectedAirportCodes.includes(x.iata))
+    console.log(selectedAirportCodes)
+    console.log(selectedAirports)
 
     useEffect(() => {
         // Execute only at first render

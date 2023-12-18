@@ -26,7 +26,7 @@ export function AirportView({loading, items, onAirportSelectFunc}) {
             </div>
             <div className="mapContainer">
                 <Map>
-                    <AirportMarkers items={items} onMarkerClick={handleAirportSelection}/>
+                    <AirportMarkers items={items.filter(x => x.size === 'large')} onMarkerClick={handleAirportSelection}/>
                 </Map>
             </div>
         </div>
@@ -42,12 +42,10 @@ export function AirportView({loading, items, onAirportSelectFunc}) {
         const filteredItems = items.filter((item) => {
             const name = item.name ? item.name.toLowerCase() : '';
             const iata = item.iata ? item.iata.toLowerCase() : '';
-            const continent = item.continent ? item.continent.toLowerCase() : '';
 
             return (
                 name.includes(searchTerm.toLowerCase()) ||
-                iata.includes(searchTerm.toLowerCase()) ||
-                continent.includes(searchTerm.toLowerCase())
+                iata.includes(searchTerm.toLowerCase())
             );
         });
 
