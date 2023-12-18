@@ -71,7 +71,7 @@ export default function FlightsList({airport, departure, allAirports}) {
                         <div className="mapContainer">
                             <Map>
                                 <FlightLines mainAirport={airport} otherAirports={selectedAirports} />
-                                <AirportMarkers items={selectedAirports.concat(airport)} onMarkerClick={null}/>
+                                <AirportMarkers items={selectedAirports.concat(airport)} onMarkerClick={null} mainAirport={airport}/>
                             </Map>
                         </div>
                     </div>
