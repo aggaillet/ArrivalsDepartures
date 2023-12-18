@@ -33,9 +33,12 @@ export default function FlightsList({airport, departure, allAirports}) {
             }
             Promise.resolve(fetchFlights()).then((d) => {
                 setFlights(d)
-                if (! prevMainAirports.includes(airportCode.toUpperCase())){
+                if (! prevMainAirports.filter(x => x.departureBoolean === departure).map(x => x.iata.toUpperCase()).includes(airportCode.toUpperCase())){
                     previousSearchFlights = previousSearchFlights.concat(d)
-                    prevMainAirports.push(airportCode.toUpperCase())
+                    prevMainAirports.push({
+                        "departureBoolean": departure,
+                        "iata": airportCode.toUpperCase()
+                    })
                 }
                 setHasLoded(true)
             })
@@ -43,8 +46,8 @@ export default function FlightsList({airport, departure, allAirports}) {
     }, []);
 
 
-    let flightsTable = flights.map(x =>
-        <Table.Row><Table.Cell>{x.airlineName}</Table.Cell>
+    let flightsTable = flights.map((x, index) =>
+        <Table.Row key={index}><Table.Cell>{x.airlineName}</Table.Cell>
             <Table.Cell>{x.flightNumber}</Table.Cell>
             <Table.Cell> {departure ? x.arrivalAirportName : x.departureAirportName} </Table.Cell>
             <Table.Cell>{x.localisedScheduledDepartureTime.slice(-5)}</Table.Cell>
@@ -120,7 +123,7 @@ export default function FlightsList({airport, departure, allAirports}) {
                         <div className="mapContainer">
                             <Map>
                                 <FlightLines currentCityPairs={currentCityPairs} pastCityPairs={pastCityPairs}/>
-                                <AirportMarkers items={airportsList} onMarkerClick={null} mainAirport={airport}/>
+                                <AirportMarkers items={airportsList.concat(airport)} onMarkerClick={null} mainAirport={airport}/>
                             </Map>
                         </div>
                     </div>

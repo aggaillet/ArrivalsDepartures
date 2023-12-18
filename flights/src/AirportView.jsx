@@ -54,10 +54,11 @@ export function AirportView({loading, items, onAirportSelectFunc}) {
                 <div style={{display: "inline-block"}}>
                 <h3 style={{marginBottom: 0}}>Current selection: {currentAirport.iata}</h3>
                     <Input
-                           icon="search"
-                           placeholder="Airport Research by name..."
-                           onChange={handleSearch}
-                           value={searchTerm}
+                        name="searchBar"
+                        icon="search"
+                        placeholder="Airport Research by name..."
+                        onChange={handleSearch}
+                        value={searchTerm}
                     />
                 </div>
                 <Segment style={{overflow: 'auto', maxHeight: "87%" }}>
