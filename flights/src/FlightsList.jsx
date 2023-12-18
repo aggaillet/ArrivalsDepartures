@@ -4,39 +4,86 @@ import {Map} from "./Map.jsx";
 import AirportMarkers from "./AirportMarkers.jsx";
 import FlightLines from "./FlightLines.jsx";
 
+var previousSearchFlights = []
+var prevMainAirports = []
+
 export default function FlightsList({airport, departure, allAirports}) {
     let airportCode = airport.iata
+    const [flights, setFlights] = useState([])
+    const [hasLoaded, setHasLoded] = useState(false)
+
     let requestString = ""
     let titleString
-    if (departure) {
-        requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/departures?locale=en-GB"
-        titleString = "DEPARTURES FROM"
-    } else {
-        requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/arrivals?locale=en-GB"
-        titleString = "ARRIVALS TO"
-    }
 
-    const [departures, setDepartures] = useState([])
-    const [hasLoaded, setHasLoded] = useState(false)
-    let flightsTable = departures.map(x =>
+    useEffect(() => {
+        if (prevMainAirports.includes(airportCode.toUpperCase())){
+            if (departure){
+                setFlights(previousSearchFlights.filter(x => x.departureAirportCode.toUpperCase() === airportCode.toUpperCase()))
+            }else if(!departure && prevMainAirports.includes(airportCode.toUpperCase())) {
+                setFlights(previousSearchFlights.filter(x => x.arrivalAirportCode.toUpperCase() === airportCode.toUpperCase()))
+            }
+            setHasLoded(true)
+        }else{
+            if (departure) {
+                requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/departures?locale=en-GB"
+                titleString = "DEPARTURES FROM"
+            } else {
+                requestString = "https://www.skyscanner.com/g/arrival-departure-svc/api/airports/" + airportCode + "/arrivals?locale=en-GB"
+                titleString = "ARRIVALS TO"
+            }
+            Promise.resolve(fetchFlights()).then((d) => {
+                setFlights(d)
+                if (! prevMainAirports.includes(airportCode.toUpperCase())){
+                    previousSearchFlights = previousSearchFlights.concat(d)
+                    prevMainAirports.push(airportCode.toUpperCase())
+                }
+                setHasLoded(true)
+            })
+        }
+    }, []);
+
+
+    let flightsTable = flights.map(x =>
         <Table.Row><Table.Cell>{x.airlineName}</Table.Cell>
             <Table.Cell>{x.flightNumber}</Table.Cell>
             <Table.Cell> {departure ? x.arrivalAirportName : x.departureAirportName} </Table.Cell>
             <Table.Cell>{x.localisedScheduledDepartureTime.slice(-5)}</Table.Cell>
             <Table.Cell>{x.localisedScheduledArrivalTime.slice(-5)}</Table.Cell>
         </Table.Row>);
-    let selectedAirportCodes = departures.map(x => departure ? x.arrivalAirportCode : x.departureAirportCode)
-    let selectedAirports = allAirports.filter(x => selectedAirportCodes.includes(x.iata))
-    console.log(selectedAirportCodes)
-    console.log(selectedAirports)
 
-    useEffect(() => {
-        // Execute only at first render
-        Promise.resolve(fetchDepartures()).then((d) => {
-            setDepartures(d)
-            setHasLoded(true)
-        })
-    }, [])
+    let currentCityPairs = []
+    let airportsList = []
+    for (const flight of flights){
+        let depAirport = allAirports.findLast(x => x.iata === flight.departureAirportCode.toUpperCase());
+        let arrAirport = allAirports.findLast(x => x.iata === flight.arrivalAirportCode.toUpperCase());
+        if(!currentCityPairs.filter(x => x.departure === depAirport).map(x => x.arrival).includes(arrAirport)){
+            currentCityPairs.push({
+                "departure": depAirport,
+                "arrival": arrAirport
+            })
+            if(depAirport !== undefined && arrAirport !== undefined && depAirport.iata === airport.iata){
+                airportsList.push(arrAirport)
+            } else {
+                airportsList.push(depAirport)
+            }
+        }
+    }
+
+    let pastCityPairs = []
+    let type = departure ? 'departure' : 'arrival';
+    for (const pastFlight of previousSearchFlights) {
+        let depAirport = allAirports.findLast(x => x.iata === pastFlight.departureAirportCode.toUpperCase());
+        let arrAirport = allAirports.findLast(x => x.iata === pastFlight.arrivalAirportCode.toUpperCase());
+        if(!pastCityPairs.filter(x => x.departure === depAirport).map(x => x.arrival).includes(arrAirport) // Make sure combinations are unique
+            && currentCityPairs.filter(x => x.departure === depAirport).filter(x => x.arrival === arrAirport).length === 0 // Avoid duplicates with current flights
+        ){
+            pastCityPairs.push({
+                "departure": depAirport,
+                "arrival": arrAirport,
+                "type": type
+            })
+        }
+    }
 
     return(
         <>
@@ -72,8 +119,8 @@ export default function FlightsList({airport, departure, allAirports}) {
                         </div>
                         <div className="mapContainer">
                             <Map>
-                                <FlightLines mainAirport={airport} otherAirports={selectedAirports} />
-                                <AirportMarkers items={selectedAirports.concat(airport)} onMarkerClick={null} mainAirport={airport}/>
+                                <FlightLines currentCityPairs={currentCityPairs} pastCityPairs={pastCityPairs}/>
+                                <AirportMarkers items={airportsList} onMarkerClick={null} mainAirport={airport}/>
                             </Map>
                         </div>
                     </div>
@@ -83,7 +130,7 @@ export default function FlightsList({airport, departure, allAirports}) {
     )
 
     // Returns array of departures
-    async function fetchDepartures(){
+    async function fetchFlights(){
         const result = await fetch(requestString, {mode: 'cors'})
         const data = await result.json()
         if(departure){

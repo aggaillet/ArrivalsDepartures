@@ -1,13 +1,26 @@
 import {Polyline} from "react-leaflet";
 
-export default function FlightLines({mainAirport, otherAirports}){
+export default function FlightLines({currentCityPairs, pastCityPairs}){
     return(
         <>
-            {otherAirports.map((airport) => {
-                console.log(airport)
-                return(
-                    <Polyline positions={[[mainAirport.lat, mainAirport.lon], [airport.lat, airport.lon]]} />
-                )
+            {currentCityPairs.map((flight) => {
+                if(flight.departure!=null && flight.arrival!=null) {
+                    return (
+                        <Polyline
+                            positions={[[flight.departure.lat, flight.departure.lon], [flight.arrival.lat, flight.arrival.lon]]}
+                        />
+                    )
+                }
+            })}
+            {pastCityPairs.map((flight) => {
+                if(flight.departure!=null && flight.arrival!=null) {
+                    return (
+                        <Polyline
+                            pathOptions={{opacity: '0.3'}}
+                            positions={[[flight.departure.lat, flight.departure.lon], [flight.arrival.lat, flight.arrival.lon]]}
+                            />
+                    )
+                }
             })}
         </>
     )

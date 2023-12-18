@@ -20,21 +20,23 @@ export default function AirportMarkers({onMarkerClick, items, mainAirport}) {
     return (
         <>
             {items.map((item, index) => {
-                const icon = mainAirport && item.name === mainAirport.name ? airportIconOther : airportIconMain;
-                return (
-                    <Marker key={index}
-                            position={[item.lat, item.lon]}
-                            icon={icon}>
-                        <Popup>
-                            <div>
-                                <h2>{item.name}</h2>
-                                <p>IATA Code: {item.iata}</p>
-                                <p>Continent: {item.continent}</p>
-                                <ButtonAirportSelect item={item}/>
-                            </div>
-                        </Popup>
-                    </Marker>
-                );
+                if(item !== undefined){
+                    const icon = mainAirport && item.name === mainAirport.name ? airportIconOther : airportIconMain;
+                    return (
+                        <Marker key={index}
+                                position={[item.lat, item.lon]}
+                                icon={icon}>
+                            <Popup>
+                                <div>
+                                    <h2>{item.name}</h2>
+                                    <p>IATA Code: {item.iata}</p>
+                                    <p>Continent: {item.continent}</p>
+                                    <ButtonAirportSelect item={item}/>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    );
+                }
             })}
         </>
     )
