@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {Segment, Table} from 'semantic-ui-react'
+import {Button, Segment, Table} from 'semantic-ui-react'
 import {Map} from "./Map.jsx";
 import AirportMarkers from "./AirportMarkers.jsx";
 import FlightLines from "./FlightLines.jsx";
@@ -16,7 +16,7 @@ export default function FlightsList({airport, departure, allAirports}) {
     let titleString
 
     useEffect(() => {
-        if (prevMainAirports.includes(airportCode.toUpperCase())){
+        if (prevMainAirports.filter(x => x.departureBoolean === departure).map(x => x.iata.toUpperCase()).includes(airportCode.toUpperCase())){
             if (departure){
                 setFlights(previousSearchFlights.filter(x => x.departureAirportCode.toUpperCase() === airportCode.toUpperCase()))
             }else if(!departure && prevMainAirports.includes(airportCode.toUpperCase())) {
