@@ -11,6 +11,7 @@ export default function FlightsList({airport, departure, allAirports}) {
     let airportCode = airport.iata
     const [flights, setFlights] = useState([])
     const [hasLoaded, setHasLoded] = useState(false)
+    const [update, setUpdate] = useState(false)
 
     let requestString = ""
     let titleString
@@ -19,7 +20,7 @@ export default function FlightsList({airport, departure, allAirports}) {
         if (prevMainAirports.filter(x => x.departureBoolean === departure).map(x => x.iata.toUpperCase()).includes(airportCode.toUpperCase())){
             if (departure){
                 setFlights(previousSearchFlights.filter(x => x.departureAirportCode.toUpperCase() === airportCode.toUpperCase()))
-            }else if(!departure && prevMainAirports.includes(airportCode.toUpperCase())) {
+            }else{
                 setFlights(previousSearchFlights.filter(x => x.arrivalAirportCode.toUpperCase() === airportCode.toUpperCase()))
             }
             setHasLoded(true)
@@ -43,7 +44,7 @@ export default function FlightsList({airport, departure, allAirports}) {
                 setHasLoded(true)
             })
         }
-    }, []);
+    }, [update]);
 
 
     let flightsTable = flights.map((x, index) =>
@@ -66,7 +67,7 @@ export default function FlightsList({airport, departure, allAirports}) {
             })
             if(depAirport !== undefined && arrAirport !== undefined && depAirport.iata === airport.iata){
                 airportsList.push(arrAirport)
-            } else {
+            } else if(depAirport !== undefined && arrAirport !== undefined && arrAirport.iata === airport.iata){
                 airportsList.push(depAirport)
             }
         }
@@ -125,6 +126,11 @@ export default function FlightsList({airport, departure, allAirports}) {
                                 <FlightLines currentCityPairs={currentCityPairs} pastCityPairs={pastCityPairs}/>
                                 <AirportMarkers items={airportsList.concat(airport)} onMarkerClick={null} mainAirport={airport}/>
                             </Map>
+                            <Button content={"Clear history"} className={"edit-location-button"} onClick={() => {
+                                previousSearchFlights = []
+                                prevMainAirports = []
+                                setUpdate(true)
+                            }}/>
                         </div>
                     </div>
                 </>
