@@ -6,18 +6,7 @@ import {Input, Segment, Table} from "semantic-ui-react";
 import AirportMarkers from "./AirportMarkers.jsx";
 
 
-export function AirportView({loading, items, onAirportSelectFunc}) {
-    const [currentAirport, setCurrentAirport] = useState({
-        "iata": "TLS",
-        "lon": "1.374321",
-        "iso": "FR",
-        "status": 1,
-        "name": "Toulouse-Blagnac Airport",
-        "continent": "EU",
-        "type": "airport",
-        "lat": "43.63007",
-        "size": "large"
-    });
+export function AirportView({loading, items, currentAirport, onAirportSelectFunc}) {
 
     return (
         <div className="container">
@@ -91,7 +80,6 @@ export function AirportView({loading, items, onAirportSelectFunc}) {
     }
 
     function handleAirportSelection(airport) {
-        setCurrentAirport(airport)
         onAirportSelectFunc(airport)
     }
 }

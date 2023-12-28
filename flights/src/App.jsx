@@ -37,7 +37,7 @@ function App() {
         <>
             <div style={{width: "90vw", padding: 0, margin: 0, border: "white solid 5px", position: "absolute", top: "5vh", left: "5vw"}}>
                 <MenuAirports onClickItem={onClickMenuItem}></MenuAirports>
-                {activeMenu === 'airports' && <AirportView loading={loading} items={airports} onAirportSelectFunc={handleAirportSelection}/>}
+                {activeMenu === 'airports' && <AirportView loading={loading} items={airports} currentAirport={currentAirport} onAirportSelectFunc={handleAirportSelection}/>}
                 {activeMenu === 'departures' && <FlightsList airport={currentAirport} departure={true} allAirports={airports}/>}
                 {activeMenu === 'arrivals' && <FlightsList airport={currentAirport} departure={false} allAirports={airports}/>}
             </div>
